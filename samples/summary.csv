@@ -1,0 +1,4 @@
+"file","timestamp","profile","duration_s","rounds","clients","threads","scale","tps_avg","tps_median","latency_ms_avg","latency_ms_median","cpu_avg_percent_overall","mem_available_mb_avg_overall","cpu_name","logical_processors","total_memory_mb"
+"result_readonly_20251026_214513.json","2025/10/26 22:03:51","readonly","60","5","8","8","800","27715.443","27728.134464","0.289","0.289","84.34","17848.89",,,
+"result_writeheavy_20251026_220352.json","2025/10/26 22:21:48","writeheavy","60","5","8","8","800","0","0","0","0","11.72","18031.15",,,
+"result_std_20251026_222148.json","2025/10/26 22:39:45","std","60","5","8","8","800","349.547","475.803766","118.483","16.814","24.23","18129.42",,,

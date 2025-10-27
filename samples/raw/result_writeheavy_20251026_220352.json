@@ -1,0 +1,66 @@
+﻿{
+    "timestamp":  "2025-10-26T22:21:48+09:00",
+    "workload":  {
+                     "user":  "postgres",
+                     "duration_s":  60,
+                     "hide_hostname":  true,
+                     "profile":  "writeheavy",
+                     "threads":  8,
+                     "clients":  8,
+                     "tag":  "writeheavy",
+                     "rounds":  5,
+                     "port":  5432,
+                     "sql_file":  "writeheavy.sql",
+                     "host":  "localhost",
+                     "scale":  800,
+                     "database":  "benchdb"
+                 },
+    "results":  {
+                    "tps_median":  0.0,
+                    "tps_avg":  0.0,
+                    "latency_ms_avg":  0.0,
+                    "tps_list":  [
+                                     0.0,
+                                     0.0,
+                                     0.0,
+                                     0.0,
+                                     0.0
+                                 ],
+                    "latency_ms_median":  0.0,
+                    "latency_ms_list":  [
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0
+                                        ]
+                },
+    "perf":  {
+                 "cpu_avg_percent_per_round":  [
+                                                   12.61,
+                                                   15.89,
+                                                   10.7,
+                                                   10.09,
+                                                   9.29
+                                               ],
+                 "cpu_avg_percent_overall":  11.72,
+                 "mem_available_mb_avg_per_round":  [
+                                                        18176.8,
+                                                        18023.25,
+                                                        18047.3,
+                                                        17959.47,
+                                                        17948.93
+                                                    ],
+                 "mem_available_mb_avg_overall":  18031.15
+             },
+    "device":  {
+                   "label":  "",
+                   "cpu_model":  "Intel(R) Core(TM) i5-8259U CPU @ 2.30GHz",
+                   "cpu_logical_cores":  8,
+                   "ram_mb":  32632.0,
+                   "storage_type":  "HDD",
+                   "os":  "Microsoft Windows 11 Pro 10.0.26200",
+                   "postgres_version":  "psql (PostgreSQL) 17.6",
+                   "pgbench_version":  "pgbench (PostgreSQL) 17.6"
+               }
+}

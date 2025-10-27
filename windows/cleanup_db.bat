@@ -1,0 +1,93 @@
+@echo off
+REM ============================================================
+REM  cleanup_db.bat - ÉxÉìÉ`ópÉfÅ[É^ÉxÅ[ÉXÇÃçÌèú
+REM  ëOíÒ:
+REM    - secrets\pgpass.local Ç™Ç†ÇÈÇ∆äyÅiñ≥Ç¢èÍçáÇÕìsìxì¸óÕÅj
+REM ============================================================
+
+setlocal ENABLEDELAYEDEXPANSION
+
+REM ---- é¿çsäTóvÇÃï\é¶ ------------------------------------------------
+echo =============================================================
+echo  pgbench ÉxÉìÉ`ópÉfÅ[É^ÉxÅ[ÉXçÌèúÉcÅ[Éã
+echo -------------------------------------------------------------
+echo  Ç±ÇÃÉoÉbÉ`ÇÕà»â∫ÇçsÇ¢Ç‹Ç∑:
+echo    1) secrets\pgpass.local Ç™Ç†ÇÍÇŒê⁄ë±èÓïÒÇì«Ç›çûÇ›
+echo       ñ≥ÇØÇÍÇŒ Host/Port/DB/User/Password ÇëŒòbì¸óÕÇµÇ‹Ç∑ÅB
+echo    2) ëŒè€ÉfÅ[É^ÉxÅ[ÉXÇ…ëŒÇµÇƒ
+echo       DROP DATABASE IF EXISTS Çé¿çsÇµÇ‹Ç∑ÅB
+echo.
+echo  Å¶îjâÛìIÇ»ëÄçÏÇ≈Ç∑ÅBåÎÇ¡ÇΩ DB ñºÇ…íçà”ÇµÇƒÇ≠ÇæÇ≥Ç¢ÅB
+echo =============================================================
+echo.
+choice /c YN /m "ë±çsÇµÇ‹Ç∑Ç©ÅH"
+if errorlevel 2 (
+  echo ÉLÉÉÉìÉZÉãÇµÇ‹ÇµÇΩÅB
+  pause & exit /b 0
+)
+echo.
+
+set "BASE=%~dp0.."
+set "PWSH=%ProgramFiles%\PowerShell\7\pwsh.exe"
+set "SECRETS_DIR=%BASE%\secrets"
+set "PGPASS_LOCAL=%SECRETS_DIR%\pgpass.local"
+
+REM ---- psql ÇÃë∂ç›ämîF ----
+for /f "delims=" %%P in ('where.exe psql 2^>nul') do set "PSQL=%%P"
+if not defined PSQL (
+  echo ERROR: psql Ç™å©Ç¬Ç©ÇËÇ‹ÇπÇÒÅBPATH Çí Ç∑Ç©ÅAÉtÉãÉpÉXÇê›íËÇµÇƒÇ≠ÇæÇ≥Ç¢ÅB
+  pause & exit /b 1
+)
+echo Using psql: "%PSQL%"
+echo.
+
+set "DB_HOST="
+set "DB_PORT="
+set "DB_NAME="
+set "DB_USER="
+set "DB_PASS="
+
+if exist "%PGPASS_LOCAL%" (
+  for /f "usebackq delims=" %%L in ("%PGPASS_LOCAL%") do (
+    for /f "tokens=1-5 delims=:" %%a in ("%%~L") do (
+      set "DB_HOST=%%a"
+      set "DB_PORT=%%b"
+      set "DB_NAME=%%c"
+      set "DB_USER=%%d"
+      set "DB_PASS=%%e"
+    )
+    goto :HAVE_CONF
+  )
+)
+
+:HAVE_CONF
+if "%DB_HOST%"=="" set /p DB_HOST=Host ?:
+if "%DB_PORT%"=="" set /p DB_PORT=Port ?:
+if "%DB_NAME%"=="" set /p DB_NAME=Database ?:
+if "%DB_USER%"=="" set /p DB_USER=User ?:
+if "%DB_PASS%"=="" (
+  for /f "usebackq delims=" %%P in (`
+    "%PWSH%" -NoProfile -Command ^
+      "$p=Read-Host 'Postgres password' -AsSecureString; " ^
+      "$b=[Runtime.InteropServices.Marshal]::SecureStringToBSTR($p); " ^
+      "[Runtime.InteropServices.Marshal]::PtrToStringBSTR($b)"
+  `) do set "DB_PASS=%%P"
+)
+
+echo çÌèúëŒè€: %DB_USER%@%DB_HOST%:%DB_PORT%/%DB_NAME%
+choice /c YN /m "ñ{ìñÇ…çÌèúÇµÇ‹Ç∑Ç©ÅH"
+if errorlevel 2 (
+  echo ÉLÉÉÉìÉZÉãÇµÇ‹ÇµÇΩÅB
+  pause & exit /b 0
+)
+
+set "PGPASSWORD=%DB_PASS%"
+"%PSQL%" -h "%DB_HOST%" -p %DB_PORT% -U "%DB_USER%" -d postgres -c "DROP DATABASE IF EXISTS %DB_NAME%;" || (
+  echo ERROR: DROP DATABASE Ç…é∏îsÇµÇ‹ÇµÇΩÅB
+)
+set PGPASSWORD=
+
+echo.
+echo [92m[OK] ÉfÅ[É^ÉxÅ[ÉXçÌèúäÆóπ: %DB_NAME%[0m
+pause
+endlocal

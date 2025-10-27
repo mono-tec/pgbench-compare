@@ -1,0 +1,57 @@
+# =====================================
+# pgbench-compare : Git 管理除外設定
+# =====================================
+# Visual Studio 共通
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# ビルド成果物
+bin/
+obj/
+Debug/
+Release/
+
+# Secrets
+secrets/
+!secrets/pgpass.local.tmpl
+
+# 実行結果（個人環境依存のため非公開）
+results/
+!results/.keep
+
+# 一時ファイル／ログ
+*.log
+*.tmp
+*.bak
+
+# Windows実行時に生成されるPowerShell一時ファイル
+*.ps1~
+*.bat~
+
+# OS系
+Thumbs.db
+ehthumbs.db
+.DS_Store
+
+# バックアップなど
+*.old
+*.orig
+
+# IDE・OS・エディタ関連
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# 実行スクリプト（生成物・Git非管理）
+run_pgbench.ps1
+
+# -------------------------------------
+# 公開可：サンプルデータ
+# -------------------------------------
+!samples/
+!samples/**/*.json
+!samples/**/*.csv

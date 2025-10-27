@@ -1,0 +1,9 @@
+{
+  "profile": "std",
+  "duration_s": 60,
+  "rounds": 5,
+  "clients": 8,
+  "threads": 8,
+  "scale": 800,
+  "database": "benchdb"
+}
