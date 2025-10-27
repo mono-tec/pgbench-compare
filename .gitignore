@@ -14,12 +14,16 @@ obj/
 Debug/
 Release/
 
-# Secrets
-secrets/
+# Secrets（フォルダは追跡するが、実ファイルは除外）
+secrets/*
+!secrets/
 !secrets/pgpass.local.tmpl
+!secrets/.keep
+
 
 # 実行結果（個人環境依存のため非公開）
-results/
+results/*
+!results/
 !results/.keep
 
 # 一時ファイル／ログ
