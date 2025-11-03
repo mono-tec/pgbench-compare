@@ -1,0 +1,100 @@
+{
+  "timestamp": "2025-11-03T15:01:02+09:00",
+  "workload": {
+    "user": "postgres",
+    "sql_file": "writeheavy.sql",
+    "hide_hostname": true,
+    "clients": 16,
+    "host": "localhost",
+    "profile": "writeheavy",
+    "database": "benchdb",
+    "scale": 800,
+    "duration_s": 60,
+    "port": 5432,
+    "tag": "writeheavy",
+    "threads": 4,
+    "rounds": 3
+  },
+  "results": {
+    "tps_median": 0.0,
+    "tps_avg": 0.0,
+    "latency_ms_avg": 0.0,
+    "latency_ms_list": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "tps_list": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "latency_ms_median": 0.0
+  },
+  "perf": {
+    "mem_available_mb_avg_overall": 12247.64,
+    "cpu_clock_mhz": {
+      "min_overall": 1197.285,
+      "avg_per_round": [
+        2253.225,
+        2748.769,
+        2667.286
+      ],
+      "avg_overall": 2556.427,
+      "min_per_round": [
+        1197.285,
+        1197.285,
+        1197.285
+      ]
+    },
+    "cpu_avg_percent_per_round": [
+      24.71,
+      25.01,
+      25.44
+    ],
+    "mem_available_mb_avg_per_round": [
+      12248.13,
+      12249.42,
+      12245.38
+    ],
+    "cpu_package_power_w": {
+      "avg_per_round": [
+        10.28,
+        10.024,
+        10.304
+      ],
+      "avg_overall": 10.203,
+      "max_per_round": [
+        13.2,
+        11.588,
+        15.16
+      ],
+      "max_overall": 15.16
+    },
+    "cpu_temp_c": {
+      "avg_per_round": [
+        58.567,
+        57.517,
+        58.567
+      ],
+      "avg_overall": 58.217,
+      "max_per_round": [
+        64.0,
+        63.0,
+        63.0
+      ],
+      "max_overall": 64.0
+    },
+    "cpu_avg_percent_overall": 25.05
+  },
+  "device": {
+    "label": "",
+    "cpu_model": "Intel(R) Core(TM) i5-3320M CPU @ 2.60GHz",
+    "cpu_logical_cores": 4,
+    "ram_mb": 16244.0,
+    "storage_type": "SSD",
+    "os": "Microsoft Windows 10 Pro 10.0.19045",
+    "postgres_version": "psql (PostgreSQL) 17.6",
+    "pgbench_version": "pgbench (PostgreSQL) 17.6"
+  }
+}

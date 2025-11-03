@@ -1,0 +1,52 @@
+name: Release Zip on Tag
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'   # 例: v2.0.1 で起動
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # リリース作成・添付に必要
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # タグ参照のため
+
+      - name: Derive version from tag
+        id: vars
+        run: |
+          TAG="${GITHUB_REF##*/}"
+          NAME="pgbench-compare_${TAG}"
+          echo "tag=${TAG}"      >> $GITHUB_OUTPUT
+          echo "name=${NAME}"    >> $GITHUB_OUTPUT
+          echo "zip=${NAME}.zip" >> $GITHUB_OUTPUT
+
+      # .gitignore で未コミットのものはそもそも入らないので、そのまま git archive
+      - name: Build zip
+        run: |
+          git archive --format=zip \
+            --prefix=${{ steps.vars.outputs.name }}/ \
+            -o ${{ steps.vars.outputs.zip }} \
+            ${{ steps.vars.outputs.tag }}
+
+      - name: Generate SHA256
+        run: sha256sum "${{ steps.vars.outputs.zip }}" > "${{ steps.vars.outputs.zip }}.sha256"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.vars.outputs.tag }}
+          name: ${{ steps.vars.outputs.tag }}
+          files: |
+            ${{ steps.vars.outputs.zip }}
+            ${{ steps.vars.outputs.zip }}.sha256
+          body: |
+            ## pgbench-compare ${{ steps.vars.outputs.tag }}
+            このリリースはタグから自動生成されています。
+            - ZIP: `${{ steps.vars.outputs.zip }}`
+            - 検証用 SHA256: 同梱の .sha256 を参照

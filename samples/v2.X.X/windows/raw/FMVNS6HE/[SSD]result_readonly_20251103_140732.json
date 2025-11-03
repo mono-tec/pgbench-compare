@@ -1,0 +1,100 @@
+{
+  "timestamp": "2025-11-03T14:37:11+09:00",
+  "workload": {
+    "clients": 16,
+    "duration_s": 60,
+    "sql_file": null,
+    "user": "postgres",
+    "rounds": 3,
+    "hide_hostname": true,
+    "profile": "readonly",
+    "scale": 800,
+    "host": "localhost",
+    "tag": "readonly",
+    "database": "benchdb",
+    "threads": 4,
+    "port": 5432
+  },
+  "results": {
+    "latency_ms_median": 1.483,
+    "latency_ms_avg": 1.541,
+    "tps_list": [
+      12047.430545,
+      8834.657629,
+      10790.391725
+    ],
+    "latency_ms_list": [
+      1.328,
+      1.811,
+      1.483
+    ],
+    "tps_avg": 10557.493,
+    "tps_median": 10790.391725
+  },
+  "perf": {
+    "cpu_avg_percent_per_round": [
+      71.99,
+      77.78,
+      36.25
+    ],
+    "mem_available_mb_avg_overall": 11733.08,
+    "cpu_temp_c": {
+      "avg_overall": 67.061,
+      "max_per_round": [
+        79.0,
+        79.0,
+        75.0
+      ],
+      "avg_per_round": [
+        74.917,
+        66.667,
+        59.6
+      ],
+      "max_overall": 79.0
+    },
+    "cpu_clock_mhz": {
+      "avg_overall": 2686.687,
+      "min_per_round": [
+        1197.286,
+        1197.285,
+        1197.285
+      ],
+      "min_overall": 1197.285,
+      "avg_per_round": [
+        2998.203,
+        2811.958,
+        2249.899
+      ]
+    },
+    "cpu_package_power_w": {
+      "avg_overall": 13.528,
+      "max_per_round": [
+        18.333,
+        17.885,
+        17.939
+      ],
+      "avg_per_round": [
+        16.85,
+        13.045,
+        10.689
+      ],
+      "max_overall": 18.333
+    },
+    "cpu_avg_percent_overall": 62.01,
+    "mem_available_mb_avg_per_round": [
+      12215.0,
+      11264.4,
+      11719.85
+    ]
+  },
+  "device": {
+    "label": "",
+    "cpu_model": "Intel(R) Core(TM) i5-3320M CPU @ 2.60GHz",
+    "cpu_logical_cores": 4,
+    "ram_mb": 16244.0,
+    "storage_type": "SSD",
+    "os": "Microsoft Windows 10 Pro 10.0.19045",
+    "postgres_version": "psql (PostgreSQL) 17.6",
+    "pgbench_version": "pgbench (PostgreSQL) 17.6"
+  }
+}
