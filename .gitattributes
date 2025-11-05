@@ -62,4 +62,16 @@
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
 
-*.bat text
+# --- Normalize line endings (critical) ---
+# PowerShell / SQL / Markdown use LF for cross-platform compatibility
+*.ps1 text eol=lf
+*.sql text eol=lf
+*.md  text eol=lf
+# Windows batch files must use CRLF (Shift-JIS-safe)
+*.bat text eol=crlf
+*.bat.tmpl text eol=crlf
+
+.github/                export-ignore
+.vs/                    export-ignore
+results/                export-ignore
+secrets/pgpass.local    export-ignore

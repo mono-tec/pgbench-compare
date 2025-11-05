@@ -27,9 +27,9 @@ jobs:
           echo "zip=${NAME}.zip" >> $GITHUB_OUTPUT
 
       # .gitignore で未コミットのものはそもそも入らないので、そのまま git archive
-      - name: Build zip
+      - name: Build zip (respect .gitattributes EOL)
         run: |
-          git archive --format=zip \
+          git archive --format=zip --worktree-attributes \
             --prefix=${{ steps.vars.outputs.name }}/ \
             -o ${{ steps.vars.outputs.zip }} \
             ${{ steps.vars.outputs.tag }}
