@@ -2,44 +2,44 @@
 #requires -Version 7.0
 <#
 .SYNOPSIS
-  ÀsŠÂ‹«‚ÌŠî–{î•ñiCPU/ƒƒ‚ƒŠ/OS/ƒXƒgƒŒ[ƒWí•Ê/pgbenchEpsql‚Ìƒo[ƒWƒ‡ƒ“j‚ğæ“¾‚µ‚Äo—Í‚µ‚Ü‚·B
+  å®Ÿè¡Œç’°å¢ƒã®åŸºæœ¬æƒ…å ±ï¼ˆCPU/ãƒ¡ãƒ¢ãƒª/OS/ã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸ç¨®åˆ¥/pgbenchãƒ»psqlã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³ï¼‰ã‚’å–å¾—ã—ã¦å‡ºåŠ›ã—ã¾ã™ã€‚
 
 .DESCRIPTION
-  Windows ‚Ì CIM ‚Æˆê•”ƒRƒ}ƒ“ƒh‚Ìƒo[ƒWƒ‡ƒ“o—Í‚ğ—p‚¢‚ÄAˆÈ‰º‚Ìî•ñ‚ğûW‚µ‚Ü‚·B
-   - CPU ƒ‚ƒfƒ‹–¼ / ˜_—ƒRƒA”
-   - •¨—ƒƒ‚ƒŠ—e—ÊiMBj
-   - OS –¼‚Æƒo[ƒWƒ‡ƒ“
-   - ƒXƒgƒŒ[ƒWí•ÊiSSD/HDD/Unspecifiedj
-   - pgbench / psql ‚Ìƒo[ƒWƒ‡ƒ“iPATH ‚É‚ ‚éê‡j
-   - ƒzƒXƒg–¼ƒ‰ƒxƒ‹i”ñ•\¦‚É‚·‚é‚±‚Æ‚à‰Â”\j
+  Windows ã® CIM ã¨ä¸€éƒ¨ã‚³ãƒãƒ³ãƒ‰ã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³å‡ºåŠ›ã‚’ç”¨ã„ã¦ã€ä»¥ä¸‹ã®æƒ…å ±ã‚’åé›†ã—ã¾ã™ã€‚
+   - CPU ãƒ¢ãƒ‡ãƒ«å / è«–ç†ã‚³ã‚¢æ•°
+   - ç‰©ç†ãƒ¡ãƒ¢ãƒªå®¹é‡ï¼ˆMBï¼‰
+   - OS åã¨ãƒãƒ¼ã‚¸ãƒ§ãƒ³
+   - ã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸ç¨®åˆ¥ï¼ˆSSD/HDD/Unspecifiedï¼‰
+   - pgbench / psql ã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³ï¼ˆPATH ã«ã‚ã‚‹å ´åˆï¼‰
+   - ãƒ›ã‚¹ãƒˆåãƒ©ãƒ™ãƒ«ï¼ˆéè¡¨ç¤ºã«ã™ã‚‹ã“ã¨ã‚‚å¯èƒ½ï¼‰
 
 .PARAMETER HideHostName
-  o—Í‚Ì label ƒtƒB[ƒ‹ƒhiƒzƒXƒg–¼j‚ğ‹ó•¶š‚É‚µ‚Ü‚·BŒöŠJ—pJSON“™‚ÅƒzƒXƒg–¼‚ğ‰B‚µ‚½‚¢ê‡‚Ég—p‚µ‚Ü‚·B
+  å‡ºåŠ›ã® label ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ï¼ˆãƒ›ã‚¹ãƒˆåï¼‰ã‚’ç©ºæ–‡å­—ã«ã—ã¾ã™ã€‚å…¬é–‹ç”¨JSONç­‰ã§ãƒ›ã‚¹ãƒˆåã‚’éš ã—ãŸã„å ´åˆã«ä½¿ç”¨ã—ã¾ã™ã€‚
 
 .OUTPUTS
   PSCustomObject
-  Ÿ‚ÌƒL[‚ğ‚ÂƒIƒuƒWƒFƒNƒg‚ğ 1 Œo—Í:
+  æ¬¡ã®ã‚­ãƒ¼ã‚’æŒã¤ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ 1 ä»¶å‡ºåŠ›:
     label, cpu_model, cpu_logical_cores, ram_mb, storage_type, os,
     postgres_version, pgbench_version
 
 .EXAMPLE
   pwsh .\Get-SysInfo.ps1
-  # ûWŒ‹‰ÊƒIƒuƒWƒFƒNƒg‚ğo—Í
+  # åé›†çµæœã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å‡ºåŠ›
 
 .EXAMPLE
   pwsh .\Get-SysInfo.ps1 -HideHostName
-  # label ‚ğ‹ó‚É‚µ‚Äo—ÍiŒöŠJ—pj
+  # label ã‚’ç©ºã«ã—ã¦å‡ºåŠ›ï¼ˆå…¬é–‹ç”¨ï¼‰
 
 .NOTES
-  - ŠÇ—ÒŒ ŒÀ‚Í•s—v‚Å‚·i‚½‚¾‚µŠÂ‹«‚É‚æ‚èˆê•”‚ÌƒNƒGƒŠ‚ª¸”s‚·‚éê‡‚ª‚ ‚è‚Ü‚·jB
-  - ¸”s‚ÍŠY“–ƒtƒB[ƒ‹ƒh‚ğ $null / "Unspecified" ‚ÉƒtƒH[ƒ‹ƒoƒbƒN‚µ‚Ü‚·B
+  - ç®¡ç†è€…æ¨©é™ã¯ä¸è¦ã§ã™ï¼ˆãŸã ã—ç’°å¢ƒã«ã‚ˆã‚Šä¸€éƒ¨ã®ã‚¯ã‚¨ãƒªãŒå¤±æ•—ã™ã‚‹å ´åˆãŒã‚ã‚Šã¾ã™ï¼‰ã€‚
+  - å¤±æ•—æ™‚ã¯è©²å½“ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã‚’ $null / "Unspecified" ã«ãƒ•ã‚©ãƒ¼ãƒ«ãƒãƒƒã‚¯ã—ã¾ã™ã€‚
 #>
 param([switch]$HideHostName)
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
 # --- CPU / Memory / OS -------------------------------------------------------
-# ‰Â”\‚ÈŒÀ‚èˆÀ‘S‚Éî•ñæ“¾B¸”s‚µ‚Ä‚àƒXƒNƒŠƒvƒg‘S‘Ì‚Í~‚ß‚¸‚É $null ‚ğ“ü‚ê‚éB
+# å¯èƒ½ãªé™ã‚Šå®‰å…¨ã«æƒ…å ±å–å¾—ã€‚å¤±æ•—ã—ã¦ã‚‚ã‚¹ã‚¯ãƒªãƒ—ãƒˆå…¨ä½“ã¯æ­¢ã‚ãšã« $null ã‚’å…¥ã‚Œã‚‹ã€‚
 $cpu = Get-CimInstance Win32_Processor | Select-Object -First 1 Name, NumberOfLogicalProcessors
 $cs  = Get-CimInstance Win32_ComputerSystem
 $ramMB = [math]::Round($cs.TotalPhysicalMemory / 1MB)
@@ -53,7 +53,7 @@ try {
   if ($pd -and $pd.MediaType) { $storageType = [string]$pd.MediaType }
 } catch {}
 
-# --- Versions (pgbench / psql ‚ª PATH ‚É‚ ‚éê‡‚Ì‚İ) -------------------------
+# --- Versions (pgbench / psql ãŒ PATH ã«ã‚ã‚‹å ´åˆã®ã¿) -------------------------
 $pgbenchVersion = $null
 $psqlVersion = $null
 try { $pgbenchVersion = (& pgbench --version 2>$null).Trim() } catch {}
@@ -66,7 +66,7 @@ if (-not $label -or $label.Trim().Length -eq 0) {
 }
 if ($HideHostName) { $label = "" }
 
-# --- o—ÍiŒöŠJ—p“r‚ğˆÓ¯‚µAƒlƒbƒgƒ[ƒN–¼/ƒhƒ‰ƒCƒu/ƒ†[ƒU/ƒhƒƒCƒ““™‚ÍŠÜ‚ß‚È‚¢j --
+# --- å‡ºåŠ›ï¼ˆå…¬é–‹ç”¨é€”ã‚’æ„è­˜ã—ã€ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯å/ãƒ‰ãƒ©ã‚¤ãƒ–/ãƒ¦ãƒ¼ã‚¶/ãƒ‰ãƒ¡ã‚¤ãƒ³ç­‰ã¯å«ã‚ãªã„ï¼‰ --
 [ordered]@{
   label              = $label
   cpu_model          = $cpu.Name
