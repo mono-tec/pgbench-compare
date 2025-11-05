@@ -64,7 +64,7 @@
 
 # --- Normalize line endings (critical) ---
 # PowerShell / SQL / Markdown use LF for cross-platform compatibility
-*.ps1 text eol=lf
+*.ps1 text eol=crlf
 *.sql text eol=lf
 *.md  text eol=lf
 # Windows batch files must use CRLF (Shift-JIS-safe)
