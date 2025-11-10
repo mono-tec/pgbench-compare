@@ -1,8 +1,7 @@
 <# ========================================================================
   pgbench-compare / run_pgbench.ps1 (TEMPLATE, single-file with HwSensorCli)
   - PowerShell 7 専用ベンチマーク実行スクリプト
-  - 事前に prep_db.bat を実行して、secrets/pgpass.local と
-    本スクリプト（テンプレ置換版）を生成してください。
+  - 事前に prep_db.bat を実行して、本スクリプト（テンプレ置換版）を生成してください。
   - PostgreSQL の pgbench / psql が PATH に必要です。
   - HwSensorCli.exe（管理者権限で温度・電力・クロック取得）を同フォルダへ
 
@@ -15,8 +14,8 @@
   注意:
     - PowerShell 7 以外（Windows PowerShell 5.x）では動きません。
       Windows Terminal で「PowerShell（青アイコン）/ pwsh」を選択。
-    - パスワードは secrets/pgpass.local を使用し、本スクリプトやログに出しません。
-
+    - prep_db.bat で埋め込まれた接続情報を使用します。
+    - 本スクリプトは .gitignore 対象です（パスワードはGit管理外）。
 ========================================================================= #>
 #requires -Version 7.0
 
@@ -48,7 +47,7 @@ param(
   [int]   $DbPort = #DB_PORT#,
   [string]$DbName = "#DB_NAME#",
   [string]$DbUser = "#DB_USER#",
-  [string]$DbPassword = "",
+  [string]$DbPassword = "#DB_PASS#",
 
   [string]$Pgbench = "pgbench",
   [string]$Psql    = "psql",
@@ -262,35 +261,10 @@ function Summarize-HwRound {
   }
 }
 
-# =========================
-# テンプレ置換フォールバック
-# =========================
-if ($DbHost -eq "#DB_HOST#") { $DbHost = "localhost" }
-if ($DbPort -eq "#DB_PORT#") { $DbPort = 5432 }
-if ($DbUser -eq "#DB_USER#") { $DbUser = "postgres" }
-if ($DbPassword -eq "")      { $DbPassword = $null }
-
-# =========================
-# パスワード解決（pgpass / env / 明示）
-# =========================
-$resolvedPassword = $DbPassword
-if (-not $resolvedPassword -and $env:PGPASSWORD) { $resolvedPassword = $env:PGPASSWORD }
-if (-not $resolvedPassword) {
-  $pgpassPath = Join-Path $PSScriptRoot "secrets/pgpass.local"
-  if (Test-Path $pgpassPath) {
-    $line = Get-Content $pgpassPath | Where-Object { $_ -and ($_ -notmatch '^\s*#') } | Select-Object -First 1
-    if ($line) {
-      $parts = $line.Split(':', 5)
-      if ($parts.Count -ge 5) {
-        if (-not $DbHost  -or $DbHost  -eq "") { $DbHost  = $parts[0] }
-        if (-not $DbPort                 )     { $DbPort  = [int]$parts[1] }
-        if (-not $DbName -or $DbName -eq "")   { $DbName  = $parts[2] }
-        if (-not $DbUser -or $DbUser -eq "")   { $DbUser  = $parts[3] }
-        $resolvedPassword = $parts[4]
-      }
-    }
-  }
-}
+ # =========================
+ # パスワード設定（明示または環境変数）
+ # =========================
+$resolvedPassword = if ($DbPassword) { $DbPassword } else { $env:PGPASSWORD }
 $__prevPwd = $env:PGPASSWORD
 if ($resolvedPassword) { $env:PGPASSWORD = $resolvedPassword }
 
@@ -363,7 +337,7 @@ try {
     }
 
     # 3) CLI パス（常に絶対パス化）
-    [string]$HwSensorCli = Join-Path $toolDir 'HwSensorCli.exe'
+    $HwSensorCli = Join-Path $toolDir 'HwSensorCli.exe'
 
 
   # HwSensor 事前ガード（依存不足やパス不正時は静かに無効化）
@@ -385,7 +359,7 @@ try {
   # pgbench 初期化
   "[STEP] init: $Pgbench -h $DbHost -p $DbPort -U $DbUser -i -s $Scale $DbName" | Tee-Object -FilePath $logPath -Append
   & $Pgbench -h $DbHost -p $DbPort -U $DbUser -i -s $Scale $DbName 2>&1 | Tee-Object -FilePath $logPath -Append
-  "[*hint] init 失敗時は DB 作成・接続先・認証・pgpass を確認してください。" | Tee-Object -FilePath $logPath -Append  # ← ヒントを追記（NEW）
+  "[*hint] init 失敗時は DB 作成・接続先・認証（ユーザー/パスワード）を確認してください。" | Tee-Object -FilePath $logPath -Append
 
 
   # 収集カウンタ（呼び出し側で省略可だが明示しておく）

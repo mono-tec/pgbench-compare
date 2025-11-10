@@ -1,6 +1,6 @@
 @echo off
 REM ============================================================
-REM  prep_db.bat - ベンチ用DB作成 & pgpass.local 生成 & run_pgbench.ps1 生成
+REM  prep_db.bat - ベンチ用DB作成 & run_pgbench.ps1 / launch_all.bat 生成
 REM  前提:
 REM    - PowerShell 7 (pwsh.exe)
 REM    - psql が PATH にある（無ければ PSQL 変数をフルパスに）
@@ -12,7 +12,7 @@ echo =============================================================
 echo  pgbench ベンチマーク環境 準備ツール
 echo -------------------------------------------------------------
 echo  このバッチは以下の処理を行います:
-echo   1. PostgreSQL の接続情報を入力し、secrets\pgpass.local を生成します。
+echo   1. PostgreSQL の接続情報を入力し、run_pgbench.ps1 / launch_all.bat を生成します。
 echo   2. run_pgbench.tmpl.ps1 をもとに run_pgbench.ps1 を生成します。
 echo   3. launch_all.bat.tmpl をもとに launch_all.bat を生成します。
 echo   4. 指定されたデータベースが存在しない場合は CREATE DATABASE を試行します。
@@ -28,7 +28,7 @@ set "PWSH=%ProgramFiles%\PowerShell\7\pwsh.exe"
 REM 例: フルパス指定したい場合は下行のコメントを外す
 REM set "PSQL=C:\Program Files\PostgreSQL\17\bin\psql.exe"
 
-rem InnoReplacer.exe の配置場所（例：リポジトリの tool/ 配下）
+REM InnoReplacer.exe の配置場所（例：リポジトリの tool/ 配下）
 set "INNO_REPLACER=%~dp0..\tool\InnoReplacer.exe"
 
 REM --- pwsh フォールバック ---
@@ -44,11 +44,6 @@ REM --- テンプレート/出力ファイル ---
 set "BASE=%~dp0..\"
 set "TMPL=%BASE%run_pgbench.tmpl.ps1"
 set "OUTP=%BASE%run_pgbench.ps1"
-
-REM --- secrets ---
-set "SECRETS_DIR=%BASE%secrets"
-set "TMPL_SECRETS=%SECRETS_DIR%\pgpass.local.tmpl"
-set "PGPASS_LOCAL=%SECRETS_DIR%\pgpass.local"
 
 REM --- windows ---
 set "WINDOWS_DIR=%BASE%windows"
@@ -97,38 +92,6 @@ echo %DB_PORT%| findstr /r "^[0-9][0-9]*$" >nul || (
   pause & exit /b 1
 )
 
-REM ---- secrets\pgpass.local 作成（PowerShellでテンプレ置換）----
-if not exist "%SECRETS_DIR%" mkdir "%SECRETS_DIR%"
-if not exist "%TMPL_SECRETS%" (
-  echo ERROR: テンプレートが見つかりません: %TMPL_SECRETS%
-  pause & exit /b 1
-)
-
-if exist "%PGPASS_LOCAL%" (
-  choice /c YN /m "既存の pgpass.local を上書きしますか？"
-  if errorlevel 2 (
-    echo キャンセルされました。
-    pause & exit /b 0
-  )
-)
-
-"%PWSH%" -NoLogo -NoProfile -Command ^
-  "$ErrorActionPreference='Stop'; " ^
-  "$t = Get-Content -Raw -Path '%TMPL_SECRETS%'; " ^
-  "$t = $t -replace '#DB_HOST#', $env:DB_HOST; " ^
-  "$t = $t -replace '#DB_PORT#', $env:DB_PORT; " ^
-  "$t = $t -replace '#DB_NAME#', $env:DB_NAME; " ^
-  "$t = $t -replace '#DB_USER#', $env:DB_USER; " ^
-  "$t = $t -replace '#DB_PASS#', $env:DB_PASS; " ^
-  "Set-Content -Path '%PGPASS_LOCAL%' -Value $t -Encoding UTF8; "  ^
-  "Add-Content -Path '%PGPASS_LOCAL%' -Value '' -Encoding UTF8"  ^
-  ""
-if errorlevel 1 (
-  echo ERROR: pgpass.local の生成に失敗しました。
-  pause & exit /b 1
-)
-echo 作成: %PGPASS_LOCAL%
-
 REM --- run_pgbench.ps1 生成（UTF-8）---
 if not exist "%TMPL%" (
   echo ERROR: %TMPL% が見つかりません。run_pgbench.tmpl.ps1 を配置してください。
@@ -143,12 +106,20 @@ if exist "%OUTP%" (
   )
 )
 
+REM PowerShell で環境変数を使って安全に置換
+set "ENV_DB_NAME=%DB_NAME%"
+set "ENV_DB_HOST=%DB_HOST%"
+set "ENV_DB_PORT=%DB_PORT%"
+set "ENV_DB_USER=%DB_USER%"
+set "ENV_DB_PASS=%DB_PASS%"
+
 "%PWSH%" -NoLogo -NoProfile -Command ^
-  "$t = Get-Content -Raw -Path '%TMPL%'; " ^
-  "$t = $t.Replace('#DB_NAME#','%DB_NAME%'); " ^
-  "$t = $t.Replace('#DB_HOST#','%DB_HOST%'); " ^
-  "$t = $t.Replace('#DB_PORT#','%DB_PORT%'); " ^
-  "$t = $t.Replace('#DB_USER#','%DB_USER%'); " ^
+  "$t = Get-Content -Raw -Path '%TMPL%';" ^
+  "$t = $t.Replace('#DB_NAME#',  $env:ENV_DB_NAME);"  ^
+  "$t = $t.Replace('#DB_HOST#',  $env:ENV_DB_HOST);"  ^
+  "$t = $t.Replace('#DB_PORT#',  $env:ENV_DB_PORT);"  ^
+  "$t = $t.Replace('#DB_USER#',  $env:ENV_DB_USER);"  ^
+  "$t = $t.Replace('#DB_PASS#',  $env:ENV_DB_PASS);"  ^
   "Set-Content -Encoding UTF8 '%OUTP%' -Value $t"
 if errorlevel 1 (
   echo ERROR: run_pgbench.ps1 の生成に失敗しました。
@@ -156,7 +127,7 @@ if errorlevel 1 (
 )
 echo 生成: %OUTP%
 
-REM --- launch_all.bat 生成（テンプレ → 実体）---
+REM --- launch_all.bat 生成（テンプレ → 実体, SJISのまま）---
 if not exist "%TMPL_LAUNCH%" (
   echo ERROR: %TMPL_LAUNCH% が見つかりません。launch_all.bat.tmpl を配置してください。
   pause & exit /b 2
@@ -170,7 +141,6 @@ if exist "%OUT_LAUNCH%" (
   )
 )
 
-REM 初回（存在しない）でも常にテンプレートをコピー
 COPY /Y "%TMPL_LAUNCH%" "%OUT_LAUNCH%" >nul
 if errorlevel 1 (
   echo ERROR: launch_all.bat のコピーに失敗しました。
@@ -205,6 +175,7 @@ echo.
 echo 準備完了。windows\launch_all.bat または run_pgbench.ps1 を実行してください。
 pause
 endlocal
+exit /b 0
 
 REM ================================================
 REM  InnoReplacer で Shift-JIS のまま置換する関数

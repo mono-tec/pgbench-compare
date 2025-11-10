@@ -37,9 +37,6 @@ pgbench-compare/
 │  │  ├─ result_sample_readonly.json
 │  │  └─ result_sample_writeheavy.json
 │  └─ summary_sample.csv
-├─ secrets/               # 接続情報
-│  ├─ pgpass.local.tmpl   # テンプレート
-│  ├─ pgpass.local        # 実際の接続情報（生成・非管理）
 ├─ tool/
 │  ├─ HwSensorCli.exe     # CPU温度・電力などの取得ツール
 │  ├─ HwSensorCli.sys     # CPU温度・電力などの取得ツールが一時的に生成
@@ -347,6 +344,8 @@ git push origin v1.1.0
 |-------------|------------|
 | v1.0.0 | 初回公開 |
 | v2.0.0 | CPU温度/電力/クロック出力の追加・writeheavy修正 |
+| v2.0.1 | GitHub Actions対応・ZIP改行コード不具合発生（Known Issues） |
+| v2.0.2 | 改行コード固定化・ポート番号修正・`secrets/` フォルダ削除・パスワード管理を `run_pgbench.ps1` に統一 |
 
 ---
 
